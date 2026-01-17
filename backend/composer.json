@@ -1,0 +1,14 @@
+{
+    "name": "tripmate/backend",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Tripmate\\Backend\\": "app/"
+        }
+    },
+    "require": {
+        "respect/validation": "^2.4",
+        "altorouter/altorouter": "^2.0",
+        "firebase/php-jwt": "^6.11"
+    }
+}
