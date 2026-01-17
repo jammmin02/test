@@ -3,6 +3,8 @@
 namespace App\Http\Requests\ScheduleItem;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ScheduleItemIndexRequest extends FormRequest
 {
@@ -11,48 +13,40 @@ class ScheduleItemIndexRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() !== null;
+        return Auth::check();
     }
 
     /**
      * 일정 아이템 목록 유효성 검증
-     * - page, size
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'page' => ['sometimes', 'integer', 'min:1'],
-            'size' => ['sometimes', 'integer', 'min:1', 'max:100'],
-        ];
+                'page' => ['sometimes', 'integer', 'min:1'],
+                'size' => ['sometimes', 'integer', 'min:1', 'max:100'],
+                'sort' => ['sometimes', 'string'],
+                'region_id' => ['sometimes', 'integer', Rule::exists('regions', 'region_id')],
+            ];
     }
 
     /**
-     * @return array<string, string>
+     * @return array{page.integer: string, size.integer: string, size.max: string, sort.string: string}
      */
     public function messages(): array
     {
         return [
             'page.integer' => '페이지 번호는 숫자여야 합니다.',
-            'page.min' => '페이지 번호는 1 이상이어야 합니다.',
+            'page.min'     => '페이지 번호는 1 이상이어야 합니다.',
 
             'size.integer' => '페이지 크기(조회 개수)는 숫자여야 합니다.',
-            'size.min' => '페이지 크기는 최소 1개 이상이어야 합니다.',
-            'size.max' => '한 번에 최대 100개까지만 조회할 수 있습니다.',
-        ];
-    }
+            'size.min'     => '페이지 크기는 최소 1개 이상이어야 합니다.',
+            'size.max'     => '한 번에 최대 100개까지만 조회할 수 있습니다.',
 
-    /**
-     * @return array{page:int, size:int}
-     */
-    public function payload(): array
-    {
-        /** @var array{page?:int, size?:int} $data */
-        $data = $this->validated();
+            'sort.string'  => '정렬 기준은 문자열이어야 합니다.',
 
-        return [
-            'page' => $data['page'] ?? 1,
-            'size' => $data['size'] ?? 20,
+            'region_id.integer'  => '지역 ID는 숫자여야 합니다.',
+            'region_id.exists'   => '선택한 지역이 존재하지 않습니다.'
         ];
     }
 }

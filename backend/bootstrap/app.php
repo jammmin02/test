@@ -1,15 +1,15 @@
 <?php
-
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,17 +22,17 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-
+        
         /**
          * 공통 json 응답 포멧
-         *
-         * @param  string  $code
-         * @param  string  $message
-         * @param  int  $status
-         * @param  array|null  $errors
+         * @param string $code
+         * @param string $message
+         * @param int $status
+         * @param array|null $errors
          * @return \Illuminate\Http\JsonResponse
          */
-        $jsonError = function (
+
+        $jsonError = function(
             string $code,
             string $message,
             int $status,
@@ -54,8 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /**
          * API 요청인지 확인
-         *
-         * @param  \Illuminate\Http\Request  $request
+         * @param \Illuminate\Http\Request $request
          * @return bool
          */
         $isApiRequest = function (Request $request) {
@@ -64,10 +63,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /**
          * 인증 예외처리
-         *
-         * @param  \Illuminate\Http\Request  $request
-         * @param  \Illuminate\Validation\ValidationException  $e
-         * @return \Illuminate\Http\JsonResponse|null
+         * @param \Illuminate\Http\Request $request
+         * @param \Illuminate\Validation\ValidationException $e
+         * @return \Illuminate\Http\JsonResponse|null 
          */
         $exceptions->renderable(function (
             ValidationException $e,
@@ -76,7 +74,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $jsonError,
             $isApiRequest
         ) {
-            if (! $isApiRequest($request)) {
+            if (!$isApiRequest($request)){
                 return;
             }
 
@@ -90,19 +88,18 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /**
          * 모델또는 라우트 리스소 없음 (404)
-         *
-         * @param  \Illuminate\Http\Request  $request
-         * @param  \Illuminate\Auth\AuthenticationException  $e
+         * @param \Illuminate\Http\Request $request
+         * @param \Illuminate\Auth\AuthenticationException $e
          * @return \Illuminate\Http\JsonResponse|null
          */
         $exceptions->renderable(function (
-            ModelNotFoundException|NotFoundHttpException $e,
+            ModelNotFoundException | NotFoundHttpException $e,
             Request $request
         ) use (
             $jsonError,
             $isApiRequest
         ) {
-            if (! $isApiRequest($request)) {
+            if (!$isApiRequest($request)){
                 return;
             }
 
@@ -115,10 +112,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /**
          * 인증 예외처리
-         *
-         * @param  \Illuminate\Http\Request  $request
-         * @param  \Illuminate\Auth\AuthenticationException  $e
-         * @return \Illuminate\Http\JsonResponse|null
+         * @param \Illuminate\Http\Request $request
+         * @param \Illuminate\Auth\AuthenticationException $e
+         * @return \Illuminate\Http\JsonResponse|null 
          */
         $exceptions->renderable(function (
             AuthenticationException $e,
@@ -127,7 +123,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $jsonError,
             $isApiRequest
         ) {
-            if (! $isApiRequest($request)) {
+            if (!$isApiRequest($request)){
                 return;
             }
 
@@ -140,11 +136,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /**
          * 인가 관련 예외처리
-         *
-         * @param  \Illuminate\Http\Request  $request
-         * @param  \Illuminate\Auth\Access\AuthorizationException  $e
-         * @return \Illuminate\Http\JsonResponse|null
+         * @param \Illuminate\Http\Request $request
+         * @param \Illuminate\Auth\Access\AuthorizationException $e
+         * @return \Illuminate\Http\JsonResponse|null 
          */
+
         $exceptions->renderable(function (
             AuthorizationException $e,
             Request $request
@@ -152,9 +148,9 @@ return Application::configure(basePath: dirname(__DIR__))
             $jsonError,
             $isApiRequest
         ) {
-            if (! $isApiRequest($request)) {
+            if (!$isApiRequest($request)){
                 return;
-            }
+            } 
 
             return $jsonError(
                 'FORBIDDEN',
@@ -165,10 +161,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /**
          * 일반 HTTP 예외처리
-         *
-         * @param  \Illuminate\Http\Request  $request
-         * @param  \Symfony\Component\HttpKernel\Exception\HttpException  $e
-         * @return \Illuminate\Http\JsonResponse|null
+         * @param \Illuminate\Http\Request $request
+         * @param \Symfony\Component\HttpKernel\Exception\HttpException $e
+         * @return \Illuminate\Http\JsonResponse|null 
          */
         $exceptions->renderable(function (
             HttpException $e,
@@ -177,7 +172,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $jsonError,
             $isApiRequest
         ) {
-            if (! $isApiRequest($request)) {
+            if (!$isApiRequest($request)){
                 return;
             }
 
@@ -190,7 +185,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 404 => 'RESOURCE_NOT_FOUND',
                 default => 'HTTP_ERROR',
             };
-
+        
             $message = $e->getMessage() ?: '요청을 처리할 수 없습니다.';
 
             return $jsonError(
@@ -202,10 +197,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         /**
          * 그 외 모든 예외처리
-         *
-         * @param  \Illuminate\Http\Request  $request
-         * @param  \Throwable  $e
-         * @return \Illuminate\Http\JsonResponse|null
+         * @param \Illuminate\Http\Request $request
+         * @param \Throwable $e
+         * @return \Illuminate\Http\JsonResponse|null 
          */
         $exceptions->renderable(function (
             \Throwable $e,
@@ -213,10 +207,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ) use (
             $isApiRequest
         ) {
-            if (! $isApiRequest($request)) {
+            if (!$isApiRequest($request)){
                 return;
             }
-
+            
             // 개발 모드
             if (config('app.debug')) {
                 return response()->json([
@@ -229,5 +223,5 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 500);
             }
         });
-
+        
     })->create();

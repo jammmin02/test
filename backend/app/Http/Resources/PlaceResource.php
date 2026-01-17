@@ -9,7 +9,6 @@ class PlaceResource extends JsonResource
 {
     /**
      * 장소 리소스(외부 결과 저장, 단건 조회)
-     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -25,8 +24,8 @@ class PlaceResource extends JsonResource
 
             // JOIN한 경우 category 반환
             'category' => $this->whenLoaded('category', function () {
-                return $this->category->name;
-            }),
+                return $this->category->name; 
+            })
         ];
     }
 }

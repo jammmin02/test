@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -8,7 +9,6 @@ class TripResource extends JsonResource
 {
     /**
      * 여행 관련 리소스
-     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -22,13 +22,12 @@ class TripResource extends JsonResource
             'region_id' => $this->region_id,
 
             // 만일 WITH으로 지역 이름을 가져올 경우
-            'region_name' => $this->whenLoaded(
-                'region',
-                fn () => $this->region?->name
-            ),
+            'region_name' => $this->whenLoaded('region', function () {
+                return $this->region->name;
+            }),
 
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }

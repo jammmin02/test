@@ -63,7 +63,3 @@ coverage/
 .php_cs.cache
 .php-cs-fixer.cache
 .phpunit.result.cache
-
-
-#Ignore vscode AI rules
-.github\instructions\codacy.instructions.md

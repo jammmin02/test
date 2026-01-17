@@ -9,15 +9,15 @@ class UserResource extends JsonResource
 {
     /**
      * User 테이블 관련 리소스파일 (내 정보 조회)
-     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
     {
         return [
             'user_id' => $this->user_id,
-            'email' => $this->email_norm,
-            'nickname' => $this->name,
+            'email'   => $this->email_norm,
+            'name'    => $this->name,
+            'created_at' => $this->created_at,
         ];
     }
 }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tripmate OAuth Demo</title>
+  <style>
+    body { font-family: sans-serif; padding: 30px; }
+    button { padding: 12px 18px; margin: 5px; font-size: 16px; }
+    #log { margin-top: 20px; white-space: pre-wrap; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+  <h1>Tripmate Social Login Demo</h1>
+  <p>👇 아래 버튼을 누르면 실제 OAuth 로그인 화면까지 이동합니다.</p>
+
+  <button onclick="login('google')">Google 로그인</button>
+  <button onclick="login('line')">LINE 로그인</button>
+
+  <div id="log"></div>
+
+  <script>
+    const API_BASE = "/api/v2";
+
+    function write(msg) {
+      document.getElementById("log").innerText += msg + "\n";
+    }
+
+    async function login(provider) {
+      write(`➡️ [${provider}] 로그인 시작`);
+
+      const res = await fetch(`${API_BASE}/auth/${provider}/login`, { credentials: "include" });
+      const body = await res.json();
+
+      write("🟦 서버 응답:");
+      write(JSON.stringify(body, null, 2));
+
+      if (!body.success) {
+        write("❌ 에러 발생");
+        return;
+      }
+
+      const redirectUrl = body.data.redirect_url;
+      write(`➡️ OAuth provider로 이동: ${redirectUrl}`);
+
+      // 실제로 OAuth 페이지로 이동
+      window.location.href = redirectUrl;
+    }
+  </script>
+
+</body>
+</html>

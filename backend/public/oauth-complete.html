@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tripmate OAuth Demo</title>
+  <style>
+    body { font-family: sans-serif; padding: 30px; }
+    button { padding: 12px 18px; margin: 5px; font-size: 16px; }
+    #log { margin-top: 20px; white-space: pre-wrap; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+
+  <h2>🎉 로그인 성공!</h2>
+  <p>아래는 현재 로그인된 사용자 정보입니다:</p>
+
+  <pre id="user"></pre>
+
+  <button onclick="logout()">로그아웃</button>
+
+  <script>
+    async function fetchUser() {
+      const res = await fetch("/api/v2/users/me", { credentials: "include" });
+      const body = await res.json();
+      document.getElementById("user").innerText = JSON.stringify(body, null, 2);
+    }
+
+    async function logout() {
+      const res = await fetch("/api/v2/auth/logout", {
+        method: "POST",
+        credentials: "include"
+      });
+      alert("로그아웃되었습니다.");
+      location.href = "/oauth-demo.html";
+    }
+
+    fetchUser();
+  </script>
+</body>
+</html>

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -11,16 +12,33 @@ use Illuminate\Support\Facades\Hash;
 class UserFactory extends Factory
 {
     /**
-     * @return array{email_norm: string, name: string, password_hash: string}
+     * The current password being used by the factory.
+     */
+    protected static ?string $password;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
      */
     public function definition(): array
     {
-        $email = fake()->unique()->safeEmail();
-
         return [
-            'email_norm' => strtolower(trim($email)),
-            'password_hash' => Hash::make('password1234!'), // 테스트 기본 비번
             'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
         ];
+    }
+
+    /**
+     * Indicate that the model's email address should be unverified.
+     */
+    public function unverified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
     }
 }

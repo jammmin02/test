@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\ServiceProvider;
 
 return [
 
@@ -122,5 +123,15 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    'providers' => ServiceProvider::defaultProviders()
+        ->merge([
+        
+        App\Providers\AppServiceProvider::class,
+
+        // ← 여기 아래에 Sanctum, SocialiteProviders 등 3rd-party provider 추가
+        Laravel\Sanctum\SanctumServiceProvider::class,
+        SocialiteProviders\Manager\ServiceProvider::class,
+    ])->toArray(),
 
 ];

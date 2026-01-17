@@ -35,26 +35,16 @@ return [
         ],
     ],
 
-    'googleApi' => [
-        'api_key' => env('GOOGLE_API_KEY'),
+    'google' => [
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'      => env('GOOGLE_REDIRECT_URI'),
     ],
 
-    'google_places' => [
-
-        // API 엔드포인트
-        'endpoints' => [
-            'autocomplete' => 'https://places.googleapis.com/v1/places:autocomplete',
-            'text_search' => 'https://places.googleapis.com/v1/places:searchText',
-            'reverse_geocoding' => 'https://maps.googleapis.com/maps/api/geocode/json',
-            'nearby' => 'https://places.googleapis.com/v1/places:searchNearby',
-        ],
-
-        // FieldMask
-        'field_masks' => [
-            'search' => 'places.id,places.displayName,places.formattedAddress,places.location,places.primaryType,nextPageToken',
-            'nearby' => 'places.id,places.displayName,places.formattedAddress,places.location,places.primaryType',
-            'place_details' => 'id,displayName,formattedAddress,location,primaryType',
-        ],
+    'line' => [
+        'client_id'     => env('LINE_CLIENT_ID'),
+        'client_secret' => env('LINE_CLIENT_SECRET'),
+        'redirect'      => env('LINE_REDIRECT_URI'),
+        'bot_prompt'    => env('LINE_BOT_PROMPT', 'normal'),
     ],
-
 ];

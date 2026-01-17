@@ -7,30 +7,26 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * users 테이블 migration 실행
+     * users 테이블 (소셜 로그인 전용)
      */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('user_id');
 
-            $table->string('email_norm', 255)->unique()
-                ->comment('정규화 이메일(소문자/trim)');
-
-            $table->string('password_hash', 255)
-                ->comment('비밀번호 해시값');
+            $table->string('email_norm', 255)
+                ->nullable()
+                ->comment('소셜 이메일(소문자/trim), provider별 중복 허용');
 
             $table->string('name', 50)
+                ->unique()
                 ->comment('표시용 이름(nickname)');
 
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrentOnUpdate();
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 
-    /**
-     * DB에 users 테이블이 존재할 경우 삭제
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');
